@@ -16,11 +16,11 @@ namespace AudioConverterFunctionProject
     public static class AudioConverter
     {
         [FunctionName("AudioConverter")]
-        public static async Task<IActionResult> Run(
+        public static HttpResponseMessage Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var requestBody = new StreamReader(req.Body).ReadToEnd();
             var webmbasebyte = Convert.FromBase64String(requestBody);
             var temp = Path.GetTempFileName() + ".webm";
             var tempOut = Path.GetTempFileName() + ".wav";
@@ -58,7 +58,7 @@ namespace AudioConverterFunctionProject
             File.Delete(tempOut);
             File.Delete(temp);
             Directory.Delete(tempPath, true);           
-            return new OkObjectResult(response);
+            return response;
         }
     }
 }
